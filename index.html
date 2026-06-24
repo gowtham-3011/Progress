@@ -316,7 +316,7 @@
             list-style: none;
             flex: 1;
             margin-bottom: 14px;
-            max-height: 320px;
+            max-height: 400px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -613,7 +613,7 @@
                 font-size: 22px;
             }
             .task-list {
-                max-height: 200px;
+                max-height: 250px;
             }
         }
 
@@ -757,30 +757,61 @@
 
             const STORAGE_KEY = 'placement_tracker_data';
 
+            // ─── NEW DETAILED DEFAULT DATA ───
             const defaultData = {
                 leetcode: [
-                    { id: '1', text: 'Solve 50 LeetCode problems', completed: false },
-                    { id: '2', text: 'Complete Blind 75 list', completed: false },
-                    { id: '3', text: 'Practice DP problems', completed: false },
-                    { id: '4', text: 'Solve 10 hard problems', completed: false },
+                    { id: 'lc1', text: '✅ Solve 5 LeetCode problems today', completed: false },
+                    { id: 'lc2', text: '📘 Striver’s SDE Sheet: Arrays', completed: false },
+                    { id: 'lc3', text: '📘 Striver’s SDE Sheet: Strings', completed: false },
+                    { id: 'lc4', text: '📘 Striver’s SDE Sheet: Linked List', completed: false },
+                    { id: 'lc5', text: '📘 Striver’s SDE Sheet: Trees', completed: false },
+                    { id: 'lc6', text: '📘 Striver’s SDE Sheet: DP', completed: false },
+                    { id: 'lc7', text: '📘 Striver’s SDE Sheet: Graphs', completed: false },
+                    { id: 'lc8', text: '📘 Striver’s SDE Sheet: Greedy', completed: false },
                 ],
                 cs: [
-                    { id: '5', text: 'Study Operating Systems', completed: false },
-                    { id: '6', text: 'Study Computer Networks', completed: false },
-                    { id: '7', text: 'Study DBMS', completed: false },
-                    { id: '8', text: 'Study OOP Concepts', completed: false },
+                    // Operating Systems
+                    { id: 'cs1', text: '🖥️ OS: Process Management', completed: false },
+                    { id: 'cs2', text: '🖥️ OS: Memory Management', completed: false },
+                    { id: 'cs3', text: '🖥️ OS: File Systems', completed: false },
+                    { id: 'cs4', text: '🖥️ OS: Concurrency & Synchronization', completed: false },
+                    // DBMS
+                    { id: 'cs5', text: '🗄️ DBMS: SQL (Queries, Joins)', completed: false },
+                    { id: 'cs6', text: '🗄️ DBMS: Normalization', completed: false },
+                    { id: 'cs7', text: '🗄️ DBMS: Transactions & ACID', completed: false },
+                    { id: 'cs8', text: '🗄️ DBMS: Indexing & Performance', completed: false },
+                    // Computer Networks
+                    { id: 'cs9', text: '🌐 CN: OSI Model', completed: false },
+                    { id: 'cs10', text: '🌐 CN: TCP/IP Protocol Suite', completed: false },
+                    { id: 'cs11', text: '🌐 CN: Routing & Switching', completed: false },
+                    { id: 'cs12', text: '🌐 CN: DNS & HTTP', completed: false },
+                    // OOP
+                    { id: 'cs13', text: '🧬 OOP: Inheritance', completed: false },
+                    { id: 'cs14', text: '🧬 OOP: Polymorphism', completed: false },
+                    { id: 'cs15', text: '🧬 OOP: Encapsulation', completed: false },
+                    { id: 'cs16', text: '🧬 OOP: Abstraction & Interfaces', completed: false },
                 ],
                 lld: [
-                    { id: '9', text: 'Study LLD design patterns', completed: false },
-                    { id: '10', text: 'Study HLD principles', completed: false },
-                    { id: '11', text: 'Design a parking lot system', completed: false },
-                    { id: '12', text: 'Design a URL shortener', completed: false },
+                    // LLD
+                    { id: 'lld1', text: '🔧 LLD: Design Patterns (Creational)', completed: false },
+                    { id: 'lld2', text: '🔧 LLD: Design Patterns (Structural)', completed: false },
+                    { id: 'lld3', text: '🔧 LLD: Design Patterns (Behavioral)', completed: false },
+                    { id: 'lld4', text: '🔧 LLD: SOLID Principles', completed: false },
+                    { id: 'lld5', text: '🔧 LLD: Parking Lot System', completed: false },
+                    { id: 'lld6', text: '🔧 LLD: Library Management System', completed: false },
+                    { id: 'lld7', text: '🔧 LLD: ATM Machine Design', completed: false },
+                    // HLD
+                    { id: 'lld8', text: '🌍 HLD: URL Shortener (TinyURL)', completed: false },
+                    { id: 'lld9', text: '🌍 HLD: Twitter / News Feed', completed: false },
+                    { id: 'lld10', text: '🌍 HLD: Netflix / Video Streaming', completed: false },
+                    { id: 'lld11', text: '🌍 HLD: Rate Limiting & Throttling', completed: false },
+                    { id: 'lld12', text: '🌍 HLD: Distributed Cache (Redis)', completed: false },
                 ],
                 projects: [
-                    { id: '13', text: 'Complete a full-stack MERN project', completed: false },
-                    { id: '14', text: 'Add authentication & authorization', completed: false },
-                    { id: '15', text: 'Deploy to cloud (AWS / Vercel)', completed: false },
-                    { id: '16', text: 'Write project documentation', completed: false },
+                    { id: 'p1', text: 'Complete a full-stack MERN project', completed: false },
+                    { id: 'p2', text: 'Add authentication & authorization', completed: false },
+                    { id: 'p3', text: 'Deploy to cloud (AWS / Vercel)', completed: false },
+                    { id: 'p4', text: 'Write project documentation', completed: false },
                 ]
             };
 
@@ -882,14 +913,12 @@
                 reader.onload = function(e) {
                     try {
                         const imported = JSON.parse(e.target.result);
-                        // Validate structure
                         for (const cat of Object.keys(CATEGORIES)) {
                             if (!Array.isArray(imported[cat])) {
                                 alert('Invalid file format: missing category "' + cat + '"');
                                 return;
                             }
                         }
-                        // Merge / overwrite
                         for (const cat of Object.keys(CATEGORIES)) {
                             data[cat] = imported[cat].map(t => ({
                                 ...t,
@@ -989,7 +1018,7 @@
                 document.getElementById('importFile').addEventListener('change', function(e) {
                     if (this.files && this.files.length > 0) {
                         importData(this.files[0]);
-                        this.value = ''; // reset so same file can be re-imported
+                        this.value = '';
                     }
                 });
             }
