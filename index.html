@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📊 Placement Prep Tracker</title>
+    <style>
+        /* ── Reset & Base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0b0e14;
+            color: #e8edf5;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #161c26;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 8px;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, #1a1f2e 0%, #0f1420 100%);
+            border: 1px solid #2a3142;
+            border-radius: 24px;
+            padding: 32px 40px;
+            margin-bottom: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            gap: 16px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 1;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-left p {
+            color: #8892b0;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .overall-stats {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e2636;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #2a3142;
+            font-size: 14px;
+            font-weight: 500;
+            color: #c8d0e0;
+        }
+
+        .stat-badge .num {
+            color: #fff;
+            font-weight: 700;
+        }
+        .stat-badge .num.accent {
+            color: #a78bfa;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid #3a4055;
+            color: #8892b0;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            border-color: #6366f1;
+            color: #e8edf5;
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .action-btn.danger:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+        }
+
+        .action-btn.primary:hover {
+            border-color: #10b981;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        /* ── Overall Progress Bar ── */
+        .overall-progress-wrap {
+            margin-bottom: 32px;
+            background: #161c26;
+            border-radius: 16px;
+            padding: 20px 28px;
+            border: 1px solid #2a3142;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .overall-progress-wrap .label {
+            font-weight: 600;
+            font-size: 15px;
+            color: #c8d0e0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 130px;
+        }
+
+        .overall-progress-wrap .label span {
+            color: #a78bfa;
+        }
+
+        .progress-track {
+            flex: 1;
+            min-width: 160px;
+            height: 8px;
+            background: #252e3e;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #6366f1, #a78bfa, #8b5cf6);
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            animation: shimmer 2.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .overall-percent {
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+            min-width: 56px;
+            text-align: right;
+            letter-spacing: -0.5px;
+        }
+
+        /* ── Grid ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: #141a26;
+            border: 1px solid #252e3e;
+            border-radius: 20px;
+            padding: 22px 24px 24px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            border-color: #3a4055;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #e8edf5;
+        }
+
+        .card-title .icon {
+            font-size: 22px;
+        }
+
+        .card-stats {
+            font-size: 13px;
+            color: #8892b0;
+            background: #1e2636;
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid #2a3142;
+            font-weight: 500;
+        }
+
+        .card-stats .done {
+            color: #a78bfa;
+        }
+
+        .card-progress {
+            height: 5px;
+            background: #252e3e;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .card-progress .fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #6366f1, #a78bfa);
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ── Task List ── */
+        .task-list {
+            list-style: none;
+            flex: 1;
+            margin-bottom: 14px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .task-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: #0f1420;
+            margin-bottom: 6px;
+            transition: background 0.2s, opacity 0.3s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .task-list li:hover {
+            background: #1a212f;
+            border-color: #2a3142;
+        }
+
+        .task-list li.completed {
+            opacity: 0.55;
+        }
+
+        .task-list li.completed .task-text {
+            text-decoration: line-through;
+            color: #8892b0;
+        }
+
+        .task-check {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #3a4055;
+            border-radius: 6px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            background: #0f1420;
+            position: relative;
+        }
+
+        .task-check:checked {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: #6366f1;
+        }
+
+        .task-check:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .task-check:hover {
+            border-color: #6366f1;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 14px;
+            color: #e8edf5;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .task-delete {
+            background: transparent;
+            border: none;
+            color: #4a5168;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            line-height: 1;
+            opacity: 0;
+            flex-shrink: 0;
+        }
+
+        .task-list li:hover .task-delete {
+            opacity: 1;
+        }
+
+        .task-delete:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .empty-msg {
+            color: #4a5168;
+            font-size: 14px;
+            text-align: center;
+            padding: 24px 0 12px;
+            font-style: italic;
+        }
+
+        /* ── Add Task ── */
+        .add-task {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            border-top: 1px solid #1e2636;
+            padding-top: 14px;
+        }
+
+        .add-task input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #252e3e;
+            background: #0f1420;
+            color: #e8edf5;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.25s;
+            min-width: 0;
+        }
+
+        .add-task input::placeholder {
+            color: #4a5168;
+        }
+
+        .add-task input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .add-task button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .add-task button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .add-task button:active {
+            transform: translateY(0);
+        }
+
+        /* ── Category Colors ── */
+        .card[data-category="leetcode"] .card-progress .fill {
+            background: linear-gradient(90deg, #f59e0b, #f97316);
+        }
+        .card[data-category="leetcode"] .task-check:checked {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-color: #f59e0b;
+        }
+        .card[data-category="leetcode"] .add-task button {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+        }
+        .card[data-category="leetcode"] .add-task button:hover {
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+        }
+        .card[data-category="leetcode"] .card-title .icon {
+            color: #f59e0b;
+        }
+
+        .card[data-category="cs"] .card-progress .fill {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+        }
+        .card[data-category="cs"] .task-check:checked {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border-color: #06b6d4;
+        }
+        .card[data-category="cs"] .add-task button {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        }
+        .card[data-category="cs"] .add-task button:hover {
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35);
+        }
+        .card[data-category="cs"] .card-title .icon {
+            color: #06b6d4;
+        }
+
+        .card[data-category="lld"] .card-progress .fill {
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+        }
+        .card[data-category="lld"] .task-check:checked {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border-color: #ec4899;
+        }
+        .card[data-category="lld"] .add-task button {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        }
+        .card[data-category="lld"] .add-task button:hover {
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+        }
+        .card[data-category="lld"] .card-title .icon {
+            color: #ec4899;
+        }
+
+        .card[data-category="projects"] .card-progress .fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        .card[data-category="projects"] .task-check:checked {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-color: #10b981;
+        }
+        .card[data-category="projects"] .add-task button {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        .card[data-category="projects"] .add-task button:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+        }
+        .card[data-category="projects"] .card-title .icon {
+            color: #10b981;
+        }
+
+        /* ── Hidden file input ── */
+        #importFile {
+            display: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            .header {
+                padding: 24px 20px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+            .header-right {
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .overall-stats {
+                flex-wrap: wrap;
+            }
+            .stat-badge {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .action-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .overall-progress-wrap {
+                padding: 16px 18px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .overall-progress-wrap .label {
+                min-width: unset;
+                font-size: 14px;
+            }
+            .overall-percent {
+                text-align: left;
+                font-size: 18px;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .card {
+                padding: 18px 16px 20px;
+            }
+            .card-title {
+                font-size: 15px;
+            }
+            .add-task {
+                flex-wrap: wrap;
+            }
+            .add-task input {
+                flex: 1 1 100%;
+            }
+            .add-task button {
+                flex: 1;
+            }
+            .header-left h1 {
+                font-size: 22px;
+            }
+            .task-list {
+                max-height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-badge {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .action-btn {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .header-left h1 {
+                font-size: 19px;
+            }
+            .header-left p {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ─── HEADER ─── -->
+        <header class="header">
+            <div class="header-left">
+                <h1>📊 Placement Prep Tracker</h1>
+                <p>Your daily companion to land your dream job 🚀</p>
+            </div>
+            <div class="header-right">
+                <div class="overall-stats">
+                    <span class="stat-badge">
+                        ✅ <span class="num" id="totalDone">0</span> / <span class="num accent" id="totalAll">0</span>
+                    </span>
+                    <span class="stat-badge">
+                        📋 <span class="num" id="totalTasks">0</span> tasks
+                    </span>
+                </div>
+                <button class="action-btn" id="exportBtn">⬇ Export</button>
+                <button class="action-btn primary" id="importBtn">⬆ Import</button>
+                <button class="action-btn danger" id="resetBtn">⟳ Reset</button>
+                <input type="file" id="importFile" accept=".json" />
+            </div>
+        </header>
+
+        <!-- ─── OVERALL PROGRESS ─── -->
+        <div class="overall-progress-wrap">
+            <div class="label">
+                🎯 Overall Progress <span id="overallPercentLabel">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="overallFill" style="width:0%;"></div>
+            </div>
+            <div class="overall-percent" id="overallPercent">0%</div>
+        </div>
+
+        <!-- ─── GRID ─── -->
+        <div class="grid" id="grid">
+            <!-- LeetCode -->
+            <div class="card" data-category="leetcode">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">💻</span> LeetCode
+                    </div>
+                    <span class="card-stats"><span class="done" id="lcDone">0</span>/<span id="lcTotal">0</span></span>
+                </div>
+                <div class="card-progress"><div class="fill" id="lcFill" style="width:0%;"></div></div>
+                <ul class="task-list" id="lcList"></ul>
+                <div class="add-task">
+                    <input type="text" placeholder="Add task…" id="lcInput" />
+                    <button data-category="leetcode">+ Add</button>
+                </div>
+            </div>
+
+            <!-- CS Core -->
+            <div class="card" data-category="cs">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">📚</span> CS Core
+                    </div>
+                    <span class="card-stats"><span class="done" id="csDone">0</span>/<span id="csTotal">0</span></span>
+                </div>
+                <div class="card-progress"><div class="fill" id="csFill" style="width:0%;"></div></div>
+                <ul class="task-list" id="csList"></ul>
+                <div class="add-task">
+                    <input type="text" placeholder="Add task…" id="csInput" />
+                    <button data-category="cs">+ Add</button>
+                </div>
+            </div>
+
+            <!-- LLD + HLD -->
+            <div class="card" data-category="lld">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">🏗️</span> LLD + HLD
+                    </div>
+                    <span class="card-stats"><span class="done" id="lldDone">0</span>/<span id="lldTotal">0</span></span>
+                </div>
+                <div class="card-progress"><div class="fill" id="lldFill" style="width:0%;"></div></div>
+                <ul class="task-list" id="lldList"></ul>
+                <div class="add-task">
+                    <input type="text" placeholder="Add task…" id="lldInput" />
+                    <button data-category="lld">+ Add</button>
+                </div>
+            </div>
+
+            <!-- Projects -->
+            <div class="card" data-category="projects">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">🚀</span> Projects
+                    </div>
+                    <span class="card-stats"><span class="done" id="projDone">0</span>/<span id="projTotal">0</span></span>
+                </div>
+                <div class="card-progress"><div class="fill" id="projFill" style="width:0%;"></div></div>
+                <ul class="task-list" id="projList"></ul>
+                <div class="add-task">
+                    <input type="text" placeholder="Add task…" id="projInput" />
+                    <button data-category="projects">+ Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const CATEGORIES = {
+                leetcode: { label: 'LeetCode', listId: 'lcList', doneId: 'lcDone', totalId: 'lcTotal', fillId: 'lcFill',
+                    inputId: 'lcInput' },
+                cs: { label: 'CS Core', listId: 'csList', doneId: 'csDone', totalId: 'csTotal', fillId: 'csFill',
+                    inputId: 'csInput' },
+                lld: { label: 'LLD + HLD', listId: 'lldList', doneId: 'lldDone', totalId: 'lldTotal', fillId: 'lldFill',
+                    inputId: 'lldInput' },
+                projects: { label: 'Projects', listId: 'projList', doneId: 'projDone', totalId: 'projTotal',
+                    fillId: 'projFill', inputId: 'projInput' }
+            };
+
+            const STORAGE_KEY = 'placement_tracker_data';
+
+            const defaultData = {
+                leetcode: [
+                    { id: '1', text: 'Solve 50 LeetCode problems', completed: false },
+                    { id: '2', text: 'Complete Blind 75 list', completed: false },
+                    { id: '3', text: 'Practice DP problems', completed: false },
+                    { id: '4', text: 'Solve 10 hard problems', completed: false },
+                ],
+                cs: [
+                    { id: '5', text: 'Study Operating Systems', completed: false },
+                    { id: '6', text: 'Study Computer Networks', completed: false },
+                    { id: '7', text: 'Study DBMS', completed: false },
+                    { id: '8', text: 'Study OOP Concepts', completed: false },
+                ],
+                lld: [
+                    { id: '9', text: 'Study LLD design patterns', completed: false },
+                    { id: '10', text: 'Study HLD principles', completed: false },
+                    { id: '11', text: 'Design a parking lot system', completed: false },
+                    { id: '12', text: 'Design a URL shortener', completed: false },
+                ],
+                projects: [
+                    { id: '13', text: 'Complete a full-stack MERN project', completed: false },
+                    { id: '14', text: 'Add authentication & authorization', completed: false },
+                    { id: '15', text: 'Deploy to cloud (AWS / Vercel)', completed: false },
+                    { id: '16', text: 'Write project documentation', completed: false },
+                ]
+            };
+
+            let data = {};
+
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            }
+
+            function loadData() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        for (const cat of Object.keys(CATEGORIES)) {
+                            if (!parsed[cat]) parsed[cat] = [];
+                        }
+                        data = parsed;
+                    } catch (_) {
+                        data = JSON.parse(JSON.stringify(defaultData));
+                    }
+                } else {
+                    data = JSON.parse(JSON.stringify(defaultData));
+                }
+                for (const cat of Object.keys(CATEGORIES)) {
+                    data[cat] = data[cat].map(t => ({ ...t, id: t.id || generateId() }));
+                }
+                saveData();
+            }
+
+            function saveData() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function renderAll() {
+                let totalAll = 0,
+                    totalDone = 0;
+
+                for (const [catKey, catInfo] of Object.entries(CATEGORIES)) {
+                    const tasks = data[catKey] || [];
+                    const done = tasks.filter(t => t.completed).length;
+                    const total = tasks.length;
+                    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+                    const listEl = document.getElementById(catInfo.listId);
+                    if (listEl) {
+                        if (tasks.length === 0) {
+                            listEl.innerHTML = `<li class="empty-msg">✨ No tasks yet — add one below</li>`;
+                        } else {
+                            listEl.innerHTML = tasks.map(t => `
+                            <li data-id="${t.id}" class="${t.completed ? 'completed' : ''}">
+                              <input type="checkbox" class="task-check" ${t.completed ? 'checked' : ''} />
+                              <span class="task-text">${escapeHtml(t.text)}</span>
+                              <button class="task-delete" title="Delete">✕</button>
+                            </li>
+                          `).join('');
+                        }
+                    }
+
+                    document.getElementById(catInfo.doneId).textContent = done;
+                    document.getElementById(catInfo.totalId).textContent = total;
+                    document.getElementById(catInfo.fillId).style.width = pct + '%';
+
+                    totalAll += total;
+                    totalDone += done;
+                }
+
+                const overallPct = totalAll === 0 ? 0 : Math.round((totalDone / totalAll) * 100);
+                document.getElementById('totalDone').textContent = totalDone;
+                document.getElementById('totalAll').textContent = totalAll;
+                document.getElementById('totalTasks').textContent = totalAll;
+                document.getElementById('overallFill').style.width = overallPct + '%';
+                document.getElementById('overallPercent').textContent = overallPct + '%';
+                document.getElementById('overallPercentLabel').textContent = overallPct + '%';
+            }
+
+            // ── Export / Import ──
+
+            function exportData() {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `placement-progress-${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            function importData(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        // Validate structure
+                        for (const cat of Object.keys(CATEGORIES)) {
+                            if (!Array.isArray(imported[cat])) {
+                                alert('Invalid file format: missing category "' + cat + '"');
+                                return;
+                            }
+                        }
+                        // Merge / overwrite
+                        for (const cat of Object.keys(CATEGORIES)) {
+                            data[cat] = imported[cat].map(t => ({
+                                ...t,
+                                id: t.id || generateId()
+                            }));
+                        }
+                        saveData();
+                        renderAll();
+                        alert('✅ Progress imported successfully!');
+                    } catch (err) {
+                        alert('❌ Failed to import file. Please check the format.');
+                        console.error(err);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            // ─── Event Listeners ───
+
+            function setupEventListeners() {
+                // Add tasks
+                document.querySelectorAll('.add-task button').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        const cat = this.dataset.category;
+                        const input = document.getElementById(cat + 'Input');
+                        const text = input.value.trim();
+                        if (!text) return;
+                        data[cat].push({ id: generateId(), text, completed: false });
+                        saveData();
+                        renderAll();
+                        input.value = '';
+                        input.focus();
+                    });
+                });
+
+                document.querySelectorAll('.add-task input').forEach(inp => {
+                    inp.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            const btn = this.parentElement.querySelector('button');
+                            if (btn) btn.click();
+                        }
+                    });
+                });
+
+                // Toggle & Delete
+                document.querySelectorAll('.task-list').forEach(list => {
+                    list.addEventListener('change', function(e) {
+                        const cb = e.target.closest('.task-check');
+                        if (!cb) return;
+                        const li = cb.closest('li');
+                        if (!li) return;
+                        const id = li.dataset.id;
+                        const card = li.closest('.card');
+                        if (!card) return;
+                        const cat = card.dataset.category;
+                        if (!cat || !data[cat]) return;
+                        const task = data[cat].find(t => t.id === id);
+                        if (task) {
+                            task.completed = cb.checked;
+                            saveData();
+                            renderAll();
+                        }
+                    });
+
+                    list.addEventListener('click', function(e) {
+                        const delBtn = e.target.closest('.task-delete');
+                        if (!delBtn) return;
+                        const li = delBtn.closest('li');
+                        if (!li) return;
+                        const id = li.dataset.id;
+                        const card = li.closest('.card');
+                        if (!card) return;
+                        const cat = card.dataset.category;
+                        if (!cat || !data[cat]) return;
+                        data[cat] = data[cat].filter(t => t.id !== id);
+                        saveData();
+                        renderAll();
+                    });
+                });
+
+                // Reset
+                document.getElementById('resetBtn').addEventListener('click', function() {
+                    if (confirm('⚠️ Reset all tasks to default samples? Current progress will be lost.')) {
+                        data = JSON.parse(JSON.stringify(defaultData));
+                        saveData();
+                        renderAll();
+                    }
+                });
+
+                // Export
+                document.getElementById('exportBtn').addEventListener('click', exportData);
+
+                // Import
+                document.getElementById('importBtn').addEventListener('click', function() {
+                    document.getElementById('importFile').click();
+                });
+                document.getElementById('importFile').addEventListener('change', function(e) {
+                    if (this.files && this.files.length > 0) {
+                        importData(this.files[0]);
+                        this.value = ''; // reset so same file can be re-imported
+                    }
+                });
+            }
+
+            // ─── Init ───
+            loadData();
+            renderAll();
+            setupEventListeners();
+
+        })();
+    </script>
+
+</body>
+</html>
